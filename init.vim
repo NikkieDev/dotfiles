@@ -8,17 +8,18 @@ Plug 'preservim/nerdtree'
 
 " Themes
 Plug 'nickkadutskyi/jb.nvim'
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 " LSP
 Plug 'neovim/nvim-lspconfig'
 
 " Parser
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'main', 'do': ':TSUpdate' }
 
 " UI
 Plug 'nvim-tree/nvim-web-devicons'
-Plug 'lewis6991/gitsigns.nvim'
 Plug 'romgrk/barbar.nvim'
+Plug 'akinsho/toggleterm.nvim'
 
 " Autocompletion
 Plug 'hrsh7th/nvim-cmp'
@@ -27,19 +28,19 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 
-" Coding
-Plug 'nvim-mini/mini.pairs'
-
 call plug#end()
 
 color jb
-set number
+"color catppuccin-mocha
 
-set smartindent
+set cursorline
+hi CursorLineNr guifg=#FFEA00
+
+set number
 set shiftwidth=4
 set tabstop=4
-set guifont=Comic\ Mono:h16
-
+set guifont=Comic\ Mono:h14
+set autoindent
 let mapleader = " "
 
 lua << EOF
@@ -53,83 +54,90 @@ vim.diagnostic.config({
 
 local telescope = require('telescope.builtin')
 
-vim.keymap.set('n', '<leader>ff', telescope.find_files)
-vim.keymap.set('n', '<leader>fg', telescope.live_grep)
-vim.keymap.set('n', '<leader>fb', telescope.buffers)
-vim.keymap.set('n', '<leader>fh', telescope.help_tags)
-
-vim.opt.sessionoptions:append('globals')
-
 require('neovim-project').setup {
-	projects = {
-		"~/projects/*"
-	},
-	picker = {
-		type = "telescope"
-	}
+    projects = { "~/projects/*" },
+    picker = { type = "telescope" }
 }
 
-vim.keymap.set('n', '<leader>p', '<cmd>NeovimProjectDiscover<CR>')
-
--- NERDTree maps
-
+-- NERDTree
 vim.keymap.set('n', '<leader>tt', '<cmd>NERDTreeToggle<CR>')
 vim.keymap.set('n', '<leader>tr', '<cmd>NERDTree<CR>')
 
 -- CMP
 local cmp = require('cmp')
-
 cmp.setup({
-	mapping = {
-		['<C-space>'] = cmp.mapping.complete(),
-		['<CR>'] = cmp.mapping.confirm({ select = true }),
-		['<Tab>'] = cmp.mapping.select_next_item(),
-		['<S-Tab>'] = cmp.mapping.select_prev_item(),
-	},
-	sources = {
-		{ name = 'nvim_lsp' },
-		{ name = 'buffer' },
-		{ name = 'path' }
-	}
+    mapping = {
+        ['<C-space>'] = cmp.mapping.complete(),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        ['<Tab>'] = cmp.mapping.select_next_item(),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+    },
+    sources = {
+        { name = 'nvim_lsp' },
+        { name = 'buffer' },
+        { name = 'path' }
+    }
 })
 
 -- LSP
--- Define the config for intelephense
 vim.lsp.config("intelephense", {
-  cmd = { "intelephense", "--stdio" },
-  filetypes = { "php" },
-  settings = {
-    intelephense = {
-      files = { maxSize = 5000000 },
-      environment = { includePaths = { vim.fn.getcwd() .. "/vendor" } },
-      stubs = { "Core", "PDO", "Symfony" },
+    cmd = { "intelephense", "--stdio" },
+    filetypes = { "php", "twig" },
+    settings = {
+        intelephense = {
+            diagnostics = { undefinedFunctions = false },
+            files = { maxSize = 5000000 },
+            environment = { includePaths = { vim.fn.getcwd() .. "/vendor" }, phpVersion = "8.4.15" },
+            stubs = { "Core", "PDO", "Symfony" },
+        },
     },
-  },
 })
 
--- Enable the server for PHP buffers
 vim.lsp.enable("intelephense")
 
--- Enable coding pairs (),{},[]
-require('mini.pairs').setup();
 
--- Enable TreeSitter Parser
-vim.api.nvim_create_autocmd('FileType', {
-	pattern = {'html', 'twig', 'css', 'php'},
-	callback = function()
-		vim.treesitter.start()
-	end,
+-- Treesitter
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { 'html', 'twig', 'css', 'php' },
+  callback = function(args)
+    local ft = vim.bo[args.buf].filetype
+    local lang = vim.treesitter.language.get_lang(ft)
+
+    -- install if not found
+    if not vim.treesitter.language.add(lang) then
+      require("nvim-treesitter").install(lang)
+    end
+
+    -- start if found
+    if vim.treesitter.language.add(lang) then
+      vim.treesitter.start(args.buf, lang)
+    end
+  end,
 })
 
--- Enable UI plugins
+-- UI plugins
 require('barbar').setup({
-	insert_at_end = true,
-	insert_at_start = false,
+    insert_at_end = true,
+    insert_at_start = false,
+})
+
+require('toggleterm').setup({
+    persist_mode = true,
+    direction = 'float',
+    float_opts = { border = 'double', title_pos = 'center' }
 })
 
 -- General maps
+-- Telescope
+vim.keymap.set('n', '<leader>ff', telescope.find_files)
+vim.keymap.set('n', '<leader>fg', telescope.live_grep)
+vim.keymap.set('n', '<leader>fb', telescope.buffers)
+vim.keymap.set('n', '<leader>fh', telescope.help_tags)
 
--- Identation
+-- Projects
+vim.keymap.set('n', '<leader>p', '<cmd>NeovimProjectDiscover<CR>')
+
+-- Indentation
 vim.keymap.set('i', '<S-Tab>', '<C-O><<')
 
 -- Buffers
@@ -138,9 +146,31 @@ vim.keymap.set('n', '2', '<Cmd>BufferGoto 2<CR>')
 vim.keymap.set('n', '3', '<Cmd>BufferGoto 3<CR>')
 vim.keymap.set('n', '4', '<Cmd>BufferGoto 4<CR>')
 vim.keymap.set('n', '5', '<Cmd>BufferGoto 5<CR>')
+vim.keymap.set('n', '<S-A-l>', '<Cmd>BufferMoveNext<CR>')
+vim.keymap.set('n', '<S-A-h>', '<Cmd>BufferMovePrevious<CR>')
 vim.keymap.set('n', '<A-l>', '<Cmd>BufferNext<CR>')
 vim.keymap.set('n', '<A-h>', '<Cmd>BufferPrevious<CR>')
 vim.keymap.set('n', '<A-q>', '<Cmd>BufferClose<CR>')
+
+-- Terminal
+vim.keymap.set('n', '<A-t>', '<Cmd>ToggleTerm<CR>')
+vim.keymap.set('t', '<A-t>', '<Cmd>ToggleTerm<CR>')
+
+-- Coding
+vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>')
+-- vim.keymap.set('n', '<C-_>', 'ma^i// <Esc>`a')
+
+-- Snippets
+vim.keymap.set('i', '<C-t>', '$this->')
+
+-- unmaps
+vim.keymap.set('n', ';', '<Nop>')
+
+vim.api.nvim_create_autocmd({"BufEnter", "FileType", "InsertEnter"}, {
+    pattern = "php",
+    callback = function()
+        vim.opt_local.autoindent = true
+        vim.opt_local.smartindent = true
+    end
+})
 EOF
-
-
