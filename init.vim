@@ -7,8 +7,8 @@ Plug 'Shatur/neovim-session-manager'
 Plug 'preservim/nerdtree'
 
 " Themes
-Plug 'nickkadutskyi/jb.nvim'
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug  'folke/tokyonight.nvim',
 
 " LSP
 Plug 'neovim/nvim-lspconfig'
@@ -30,8 +30,8 @@ Plug 'hrsh7th/cmp-cmdline'
 
 call plug#end()
 
-color jb
-"color catppuccin-mocha
+color tokyonight-moon
+" color catppuccin-mocha
 
 set cursorline
 hi CursorLineNr guifg=#FFEA00
@@ -62,6 +62,7 @@ require('neovim-project').setup {
 -- NERDTree
 vim.keymap.set('n', '<leader>tt', '<cmd>NERDTreeToggle<CR>')
 vim.keymap.set('n', '<leader>tr', '<cmd>NERDTree<CR>')
+vim.keymap.set('n', '<leader>r', '<cmd>NERDTreeFind<CR>')
 
 -- CMP
 local cmp = require('cmp')
@@ -82,7 +83,7 @@ cmp.setup({
 -- LSP
 vim.lsp.config("intelephense", {
     cmd = { "intelephense", "--stdio" },
-    filetypes = { "php", "twig" },
+    filetypes = { "php", "twig", "javascript" },
     settings = {
         intelephense = {
             diagnostics = { undefinedFunctions = false },
@@ -97,23 +98,10 @@ vim.lsp.enable("intelephense")
 
 
 -- Treesitter
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { 'html', 'twig', 'css', 'php' },
-  callback = function(args)
-    local ft = vim.bo[args.buf].filetype
-    local lang = vim.treesitter.language.get_lang(ft)
-
-    -- install if not found
-    if not vim.treesitter.language.add(lang) then
-      require("nvim-treesitter").install(lang)
-    end
-
-    -- start if found
-    if vim.treesitter.language.add(lang) then
-      vim.treesitter.start(args.buf, lang)
-    end
-  end,
-})
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = { 'php', 'html', 'twig', 'css', 'sql', 'javascript' },
+	callback = function() vim.treesitter.start() end,
+});
 
 -- UI plugins
 require('barbar').setup({
@@ -146,6 +134,8 @@ vim.keymap.set('n', '2', '<Cmd>BufferGoto 2<CR>')
 vim.keymap.set('n', '3', '<Cmd>BufferGoto 3<CR>')
 vim.keymap.set('n', '4', '<Cmd>BufferGoto 4<CR>')
 vim.keymap.set('n', '5', '<Cmd>BufferGoto 5<CR>')
+vim.keymap.set('n', '6', '<Cmd>BufferGoto 6<CR>')
+vim.keymap.set('n', '7', '<Cmd>BufferGoto 7<CR>')
 vim.keymap.set('n', '<S-A-l>', '<Cmd>BufferMoveNext<CR>')
 vim.keymap.set('n', '<S-A-h>', '<Cmd>BufferMovePrevious<CR>')
 vim.keymap.set('n', '<A-l>', '<Cmd>BufferNext<CR>')
@@ -158,6 +148,8 @@ vim.keymap.set('t', '<A-t>', '<Cmd>ToggleTerm<CR>')
 
 -- Coding
 vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>')
+vim.keymap.set('n', '<A-CR>', 'i<CR><Esc>')
+
 -- vim.keymap.set('n', '<C-_>', 'ma^i// <Esc>`a')
 
 -- Snippets
