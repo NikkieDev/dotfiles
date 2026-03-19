@@ -7,7 +7,6 @@ Plug 'Shatur/neovim-session-manager'
 Plug 'preservim/nerdtree'
 
 " Themes
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug  'folke/tokyonight.nvim',
 
 " LSP
@@ -31,7 +30,6 @@ Plug 'hrsh7th/cmp-cmdline'
 call plug#end()
 
 color tokyonight-moon
-" color catppuccin-mocha
 
 set cursorline
 hi CursorLineNr guifg=#FFEA00
@@ -39,7 +37,6 @@ hi CursorLineNr guifg=#FFEA00
 set number
 set shiftwidth=4
 set tabstop=4
-set guifont=Comic\ Mono:h14
 set autoindent
 let mapleader = " "
 
@@ -62,6 +59,7 @@ require('neovim-project').setup {
 -- NERDTree
 vim.keymap.set('n', '<leader>tt', '<cmd>NERDTreeToggle<CR>')
 vim.keymap.set('n', '<leader>tr', '<cmd>NERDTree<CR>')
+vim.keymap.set('n', '<leader>tf', '<cmd>NERDTreeFocus<CR>')
 vim.keymap.set('n', '<leader>r', '<cmd>NERDTreeFind<CR>')
 
 -- CMP
@@ -99,8 +97,8 @@ vim.lsp.enable("intelephense")
 
 -- Treesitter
 vim.api.nvim_create_autocmd('FileType', {
-	pattern = { 'php', 'html', 'twig', 'css', 'sql', 'javascript' },
-	callback = function() vim.treesitter.start() end,
+ 	pattern = { 'php', 'html', 'twig', 'css', 'sql', 'javascript' },
+ 	callback = function() vim.treesitter.start() end,
 });
 
 -- UI plugins
@@ -116,6 +114,10 @@ require('toggleterm').setup({
 })
 
 -- General maps
+-- remap repeat to \ 
+vim.keymap.set('n', '\\', ';')
+vim.keymap.set('n', ';', '<Nop>')
+
 -- Telescope
 vim.keymap.set('n', '<leader>ff', telescope.find_files)
 vim.keymap.set('n', '<leader>fg', telescope.live_grep)
@@ -149,14 +151,23 @@ vim.keymap.set('t', '<A-t>', '<Cmd>ToggleTerm<CR>')
 -- Coding
 vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>')
 vim.keymap.set('n', '<A-CR>', 'i<CR><Esc>')
-
--- vim.keymap.set('n', '<C-_>', 'ma^i// <Esc>`a')
+vim.keymap.set('n', ';', 'A;<Esc>', { noremap = true, silent = true })
+vim.keymap.set('n', ',', 'A,<Esc>', { silent = true })
 
 -- Snippets
 vim.keymap.set('i', '<C-t>', '$this->')
 
--- unmaps
-vim.keymap.set('n', ';', '<Nop>')
+-- Replacements
+function toggleProtectionLevel()
+	local word = vim.fn.expand("<cword>")
+
+	if word == "private" then
+		vim.cmd('normal! ciwpublic')
+	elseif word == "public" then
+		vim.cmd('normal! ciwprivate')
+	end
+end
+vim.keymap.set('n', '<Tab>', toggleProtectionLevel)
 
 vim.api.nvim_create_autocmd({"BufEnter", "FileType", "InsertEnter"}, {
     pattern = "php",
