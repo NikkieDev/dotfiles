@@ -81,7 +81,7 @@ cmp.setup({
 -- LSP
 vim.lsp.config("intelephense", {
     cmd = { "intelephense", "--stdio" },
-    filetypes = { "php", "twig", "javascript" },
+    filetypes = { "php" },
     settings = {
         intelephense = {
             diagnostics = { undefinedFunctions = false },
@@ -92,7 +92,13 @@ vim.lsp.config("intelephense", {
     },
 })
 
+vim.lsp.config("javascript", {
+	cmd = { "typescript-language-server", "--stdio" },
+	filetypes = { "javascript" },
+})
+
 vim.lsp.enable("intelephense")
+vim.lsp.enable("javascript")
 
 
 -- Treesitter
