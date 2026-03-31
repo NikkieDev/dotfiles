@@ -1,0 +1,25 @@
+[general]
+working_directory = "/home/nikkie/projects/backoffice"
+
+[window]
+decorations = "None"
+startup_mode = "Windowed"
+padding = { x = 12, y = 16 }
+
+[colors.primary]
+background = "#24283b"
+
+[font]
+normal = { family = "Comic Mono", style = "Regular" }
+size = 14
+
+[cursor]
+style = { shape = "Underline", blinking = "Off" }
+
+[mouse]
+hide_when_typing = true
+
+[keyboard]
+bindings = [
+	{ key = "N", mods = "Control|Shift", action = "CreateNewWindow" }
+]
