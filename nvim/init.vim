@@ -1,46 +1,47 @@
-call plug#begin()
-
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'coffebar/neovim-project'
-Plug 'Shatur/neovim-session-manager'
-Plug 'preservim/nerdtree'
-
-" Themes
-Plug  'folke/tokyonight.nvim',
-
-" LSP
-Plug 'neovim/nvim-lspconfig'
-
-" Parser
-Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'main', 'do': ':TSUpdate' }
-
-" UI
-Plug 'nvim-tree/nvim-web-devicons'
-Plug 'romgrk/barbar.nvim'
-Plug 'akinsho/toggleterm.nvim'
-
-" Autocompletion
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-
-call plug#end()
-
-color tokyonight-moon
-
-set cursorline
-hi CursorLineNr guifg=#FFEA00
-
-set number
-set shiftwidth=4
-set tabstop=4
-set autoindent
-let mapleader = " "
-
 lua << EOF
+vim.pack.add({
+    { src = "https://github.com/nvim-lua/plenary.nvim" },
+    { src = "https://github.com/nvim-telescope/telescope.nvim" },
+    { src = "https://github.com/coffebar/neovim-project" },
+    { src = "https://github.com/Shatur/neovim-session-manager" },
+    { src = "https://github.com/preservim/nerdtree" },
+
+    -- Themes
+    { src = "https://github.com/folke/tokyonight.nvim" },
+
+    -- LSP
+    { src = "https://github.com/neovim/nvim-lspconfig" },
+
+    -- Parser
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+
+    -- UI
+    { src = "https://github.com/nvim-tree/nvim-web-devicons" },
+    { src = "https://github.com/romgrk/barbar.nvim" },
+    { src = "https://github.com/akinsho/toggleterm.nvim" },
+
+    -- Git
+    { src = "https://github.com/lewis6991/gitsigns.nvim" },
+
+    -- Autocompletion
+    { src = "https://github.com/hrsh7th/nvim-cmp" },
+    { src = "https://github.com/hrsh7th/cmp-nvim-lsp" },
+    { src = "https://github.com/hrsh7th/cmp-buffer" },
+    { src = "https://github.com/hrsh7th/cmp-path" },
+    { src = "https://github.com/hrsh7th/cmp-cmdline" },
+})
+
+vim.cmd.colorscheme("tokyonight-moon")
+
+vim.opt.cursorline = true
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFEA00" })
+
+vim.opt.number = true
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.autoindent = true
+vim.g.mapleader = " "
+
 vim.diagnostic.config({
     virtual_text = true,
     signs = true,
@@ -119,8 +120,10 @@ require('toggleterm').setup({
     float_opts = { border = 'double', title_pos = 'center' }
 })
 
+require('gitsigns').setup()
+
 -- General maps
--- remap repeat to \ 
+-- remap repeat to \
 vim.keymap.set('n', '\\', ';')
 vim.keymap.set('n', ';', '<Nop>')
 
@@ -154,14 +157,18 @@ vim.keymap.set('n', '<A-q>', '<Cmd>BufferClose<CR>')
 vim.keymap.set('n', '<A-t>', '<Cmd>ToggleTerm<CR>')
 vim.keymap.set('t', '<A-t>', '<Cmd>ToggleTerm<CR>')
 
--- Coding
-vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>')
-vim.keymap.set('n', '<A-CR>', 'i<CR><Esc>')
-vim.keymap.set('n', ';', 'A;<Esc>', { noremap = true, silent = true })
-vim.keymap.set('n', ',', 'A,<Esc>', { silent = true })
+-- LSP
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
+vim.keymap.set('n', 'gr', vim.lsp.buf.references)
 
--- Snippets
-vim.keymap.set('i', '<C-t>', '$this->')
+-- Coding
+vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>') -- Redo
+vim.keymap.set('n', '<A-CR>', 'i<CR><Esc>') -- Set current line to new line
+vim.keymap.set('n', ';', 'A;<Esc>', { noremap = true, silent = true }) -- append ;
+vim.keymap.set('n', ',', 'A,<Esc>', { silent = true }) -- append ,
+
+-- Split
+vim.keymap.set('n', 'vs', '<Cmd>vs<CR>');
 
 -- Replacements
 function toggleProtectionLevel()
