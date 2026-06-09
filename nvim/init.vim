@@ -105,7 +105,7 @@ vim.lsp.config("intelephense", {
         intelephense = {
             diagnostics = { undefinedFunctions = false },
             files = { maxSize = 5000000 },
-			environment = { phpVersion = "8.4.15" },
+			environment = { includePaths = { vim.fn.getcwd() .. '/vendor' }, phpVersion = "8.4.15" },
             stubs = {
                 "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core", "ctype",
                 "curl", "date", "dba", "dom", "enchant", "exif", "FFI", "fileinfo",
