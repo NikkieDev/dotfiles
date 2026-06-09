@@ -22,6 +22,7 @@ vim.pack.add({
 
     -- Git
     { src = "https://github.com/lewis6991/gitsigns.nvim" },
+	{ src = "https://github.com/f-person/git-blame.nvim" },
 
     -- Autocompletion
     { src = "https://github.com/hrsh7th/nvim-cmp" },
@@ -42,13 +43,29 @@ vim.opt.tabstop = 4
 vim.opt.autoindent = true
 vim.g.mapleader = " "
 
+local severity = vim.diagnostic.severity
+
 vim.diagnostic.config({
-    virtual_text = true,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = true,
+  virtual_text = true,
+  update_in_insert = true,
+  float = {
+    border = "rounded",
+    source = true,
+  },
+  signs = {
+    text = {
+      [severity.ERROR] = " ",
+      [severity.WARN] = " ",
+      [severity.INFO] = " ",
+      [severity.HINT] = " ",
+    },
+    numhl = {
+      [severity.ERROR] = "ErrorMsg",
+      [severity.WARN] = "WarningMsg",
+    },
+  },
 })
+ 
 
 local telescope = require('telescope.builtin')
 
@@ -88,7 +105,7 @@ vim.lsp.config("intelephense", {
         intelephense = {
             diagnostics = { undefinedFunctions = false },
             files = { maxSize = 5000000 },
-            environment = { includePaths = { vim.fn.getcwd() .. "/vendor" }, phpVersion = "8.4.15" },
+			environment = { phpVersion = "8.4.15" },
             stubs = {
                 "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core", "ctype",
                 "curl", "date", "dba", "dom", "enchant", "exif", "FFI", "fileinfo",
@@ -101,6 +118,12 @@ vim.lsp.config("intelephense", {
                 "sysvsem", "sysvshm", "tidy", "tokenizer", "xml", "xmlreader", "xmlrpc",
                 "xmlwriter", "xsl", "Zend OPcache", "zip", "zlib", "Symfony",
             },
+			inlayHints = {
+				parameterNames = { enabled = "all" },
+				parameterTypes = { enabled = true },
+				returnTypes = { enabled = true },
+				variableTypes = { enabled = true },
+			},
         },
     },
 })
@@ -112,7 +135,7 @@ vim.lsp.config("javascript", {
 
 vim.lsp.enable("intelephense")
 vim.lsp.enable("javascript")
-
+vim.lsp.inlay_hint.enable(true)
 
 -- Treesitter
 vim.api.nvim_create_autocmd('FileType', {
@@ -152,13 +175,13 @@ vim.keymap.set('n', '<leader>p', '<cmd>NeovimProjectDiscover<CR>')
 vim.keymap.set('i', '<S-Tab>', '<C-O><<')
 
 -- Buffers
-vim.keymap.set('n', '1', '<Cmd>BufferGoto 1<CR>')
-vim.keymap.set('n', '2', '<Cmd>BufferGoto 2<CR>')
-vim.keymap.set('n', '3', '<Cmd>BufferGoto 3<CR>')
-vim.keymap.set('n', '4', '<Cmd>BufferGoto 4<CR>')
-vim.keymap.set('n', '5', '<Cmd>BufferGoto 5<CR>')
-vim.keymap.set('n', '6', '<Cmd>BufferGoto 6<CR>')
-vim.keymap.set('n', '7', '<Cmd>BufferGoto 7<CR>')
+vim.keymap.set('n', '<A-1>', '<Cmd>BufferGoto 1<CR>')
+vim.keymap.set('n', '<A-2>', '<Cmd>BufferGoto 2<CR>')
+vim.keymap.set('n', '<A-3>', '<Cmd>BufferGoto 3<CR>')
+vim.keymap.set('n', '<A-4>', '<Cmd>BufferGoto 4<CR>')
+vim.keymap.set('n', '<A-5>', '<Cmd>BufferGoto 5<CR>')
+vim.keymap.set('n', '<A-6>', '<Cmd>BufferGoto 6<CR>')
+vim.keymap.set('n', '<A-7>', '<Cmd>BufferGoto 7<CR>')
 vim.keymap.set('n', '<S-A-l>', '<Cmd>BufferMoveNext<CR>')
 vim.keymap.set('n', '<S-A-h>', '<Cmd>BufferMovePrevious<CR>')
 vim.keymap.set('n', '<A-l>', '<Cmd>BufferNext<CR>')
@@ -172,6 +195,7 @@ vim.keymap.set('t', '<A-t>', '<Cmd>ToggleTerm<CR>')
 -- LSP
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
 vim.keymap.set('n', 'gr', vim.lsp.buf.references)
+vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help)
 
 -- Coding
 vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>') -- Redo
