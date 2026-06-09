@@ -196,6 +196,7 @@ vim.keymap.set('t', '<A-t>', '<Cmd>ToggleTerm<CR>')
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
 vim.keymap.set('n', 'gr', vim.lsp.buf.references)
 vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help)
+vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help)
 
 -- Coding
 vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>') -- Redo
