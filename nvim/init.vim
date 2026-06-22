@@ -1,3 +1,12 @@
+noremap <Left> :echo "Use H" <CR>
+noremap <Right> :echo "Use L" <CR>
+noremap <Up> :echo "use K" <CR>
+noremap <Down> :echo "Use J" <CR>
+inoremap <Left> <Esc>:echo "Use H"<CR>a
+inoremap <Right> <Esc>:echo "Use L"<CR>a
+inoremap <Up> <Esc>:echo "Use K"<CR>a
+inoremap <Down> <Esc>:echo "Use J"<CR>a
+
 lua << EOF
 vim.pack.add({
     { src = "https://github.com/nvim-lua/plenary.nvim" },
@@ -30,6 +39,7 @@ vim.pack.add({
     { src = "https://github.com/hrsh7th/cmp-buffer" },
     { src = "https://github.com/hrsh7th/cmp-path" },
     { src = "https://github.com/hrsh7th/cmp-cmdline" },
+    { src = "https://github.com/olrtg/nvim-emmet" },
 })
 
 vim.cmd.colorscheme("tokyonight-moon")
@@ -37,6 +47,7 @@ vim.cmd.colorscheme("tokyonight-moon")
 vim.opt.cursorline = true
 vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFEA00" })
 
+vim.opt.encoding="UTF-8"
 vim.opt.number = true
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
@@ -68,6 +79,7 @@ vim.diagnostic.config({
  
 
 local telescope = require('telescope.builtin')
+local emmet = require('nvim-emmet')
 
 require('neovim-project').setup {
     projects = { "~/projects/*" },
@@ -133,8 +145,15 @@ vim.lsp.config("javascript", {
 	filetypes = { "javascript" },
 })
 
+vim.lsp.config("emmet", {
+	cmd = { "emmet-language-server", "--stdio" },
+	filetypes = { "html", "twig" },
+	root_markers = { ".git" },
+})
+
 vim.lsp.enable("intelephense")
 vim.lsp.enable("javascript")
+vim.lsp.enable("emmet")
 vim.lsp.inlay_hint.enable(true)
 
 -- Treesitter
@@ -197,6 +216,7 @@ vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
 vim.keymap.set('n', 'gr', vim.lsp.buf.references)
 vim.keymap.set('i', '<C-k>', vim.lsp.buf.signature_help)
 vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help)
+vim.keymap.set({ 'n', 'v' }, '<leader>xe', emmet.wrap_with_abbreviation)
 
 -- Coding
 vim.keymap.set('n', '<S-r>', '<Cmd>redo<CR>') -- Redo
