@@ -17,6 +17,7 @@ vim.pack.add({
 
     -- Themes
     { src = "https://github.com/folke/tokyonight.nvim" },
+	{ src = "https://github.com/rebelot/kanagawa.nvim" },
 
     -- LSP
     { src = "https://github.com/neovim/nvim-lspconfig" },
@@ -42,10 +43,12 @@ vim.pack.add({
     { src = "https://github.com/olrtg/nvim-emmet" },
 })
 
-vim.cmd.colorscheme("tokyonight-moon")
+--vim.cmd.colorscheme("tokyonight-moon")
+vim.cmd.colorscheme("kanagawa")
 
 vim.opt.cursorline = true
-vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFEA00" })
+-- vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFEA00" }) -- YELLOW
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#C700A7" })
 
 vim.opt.encoding="UTF-8"
 vim.opt.number = true
@@ -76,7 +79,7 @@ vim.diagnostic.config({
     },
   },
 })
- 
+
 
 local telescope = require('telescope.builtin')
 local emmet = require('nvim-emmet')
@@ -118,18 +121,6 @@ vim.lsp.config("intelephense", {
             diagnostics = { undefinedFunctions = false },
             files = { maxSize = 5000000 },
 			environment = { includePaths = { vim.fn.getcwd() .. '/vendor' }, phpVersion = "8.4.15" },
-            stubs = {
-                "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core", "ctype",
-                "curl", "date", "dba", "dom", "enchant", "exif", "FFI", "fileinfo",
-                "filter", "fpm", "ftp", "gd", "gettext", "gmp", "hash", "iconv", "imap",
-                "intl", "json", "ldap", "libxml", "mbstring", "meta", "mysqli", "oci8",
-                "odbc", "openssl", "pcntl", "pcre", "PDO", "pdo_ibm", "pdo_mysql",
-                "pdo_pgsql", "pdo_sqlite", "pgsql", "Phar", "posix", "pspell", "readline",
-                "Reflection", "session", "shmop", "SimpleXML", "snmp", "soap", "sockets",
-                "sodium", "SPL", "sqlite3", "standard", "superglobals", "sysvmsg",
-                "sysvsem", "sysvshm", "tidy", "tokenizer", "xml", "xmlreader", "xmlrpc",
-                "xmlwriter", "xsl", "Zend OPcache", "zip", "zlib", "Symfony",
-            },
 			inlayHints = {
 				parameterNames = { enabled = "all" },
 				parameterTypes = { enabled = true },
