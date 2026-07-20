@@ -43,12 +43,12 @@ vim.pack.add({
     { src = "https://github.com/olrtg/nvim-emmet" },
 })
 
---vim.cmd.colorscheme("tokyonight-moon")
+-- vim.cmd.colorscheme("tokyonight-moon")
 vim.cmd.colorscheme("kanagawa")
 
 vim.opt.cursorline = true
--- vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFEA00" }) -- YELLOW
-vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#C700A7" })
+--vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFEA00" })
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#D11FB9" })
 
 vim.opt.encoding="UTF-8"
 vim.opt.number = true
@@ -85,7 +85,7 @@ local telescope = require('telescope.builtin')
 local emmet = require('nvim-emmet')
 
 require('neovim-project').setup {
-    projects = { "~/projects/*" },
+    projects = { "~/Documents/Projects/*" },
     picker = { type = "telescope" }
 }
 
@@ -121,12 +121,18 @@ vim.lsp.config("intelephense", {
             diagnostics = { undefinedFunctions = false },
             files = { maxSize = 5000000 },
 			environment = { includePaths = { vim.fn.getcwd() .. '/vendor' }, phpVersion = "8.4.15" },
-			inlayHints = {
-				parameterNames = { enabled = "all" },
-				parameterTypes = { enabled = true },
-				returnTypes = { enabled = true },
-				variableTypes = { enabled = true },
-			},
+            stubs = {
+                "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core", "ctype",
+                "curl", "date", "dba", "dom", "enchant", "exif", "FFI", "fileinfo",
+                "filter", "fpm", "ftp", "gd", "gettext", "gmp", "hash", "iconv", "imap",
+                "intl", "json", "ldap", "libxml", "mbstring", "meta", "mysqli", "oci8",
+                "odbc", "openssl", "pcntl", "pcre", "PDO", "pdo_ibm", "pdo_mysql",
+                "pdo_pgsql", "pdo_sqlite", "pgsql", "Phar", "posix", "pspell", "readline",
+                "Reflection", "session", "shmop", "SimpleXML", "snmp", "soap", "sockets",
+                "sodium", "SPL", "sqlite3", "standard", "superglobals", "sysvmsg",
+                "sysvsem", "sysvshm", "tidy", "tokenizer", "xml", "xmlreader", "xmlrpc",
+                "xmlwriter", "xsl", "Zend OPcache", "zip", "zlib", "Symfony",
+            },
         },
     },
 })
@@ -142,9 +148,15 @@ vim.lsp.config("emmet", {
 	root_markers = { ".git" },
 })
 
+vim.lsp.config("css", {
+	cmd = { "vscode-css-language-server", "--stdio" },
+	filetypes = { "css" },
+})
+
 vim.lsp.enable("intelephense")
 vim.lsp.enable("javascript")
 vim.lsp.enable("emmet")
+vim.lsp.enable("css")
 vim.lsp.inlay_hint.enable(true)
 
 -- Treesitter
