@@ -1,16 +1,22 @@
 [general]
-working_directory = "/home/nikkie/projects/backoffice"
+working_directory = "/home/nikkie/Documents/Projects"
 
 [window]
 decorations = "None"
 startup_mode = "Windowed"
+position = { x = 2560, y=15 }
+dimensions = { columns = 315, lines = 76 }
 padding = { x = 12, y = 16 }
+option_as_alt = "OnlyLeft"
 
 [colors.primary]
 background = "#24283b"
 
 [font]
-normal = { family = "Comic Mono", style = "Regular" }
+normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
+bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }
+italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }
+
 size = 14
 
 [cursor]
