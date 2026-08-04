@@ -7,6 +7,8 @@ inoremap <Right> <Esc>:echo "Use L"<CR>a
 inoremap <Up> <Esc>:echo "Use K"<CR>a
 inoremap <Down> <Esc>:echo "Use J"<CR>a
 
+set nowrap
+
 lua << EOF
 vim.pack.add({
     { src = "https://github.com/nvim-lua/plenary.nvim" },
@@ -61,7 +63,7 @@ local severity = vim.diagnostic.severity
 
 vim.diagnostic.config({
   virtual_text = true,
-  update_in_insert = true,
+  update_in_insert = false,
   float = {
     border = "rounded",
     source = true,
@@ -79,7 +81,7 @@ vim.diagnostic.config({
     },
   },
 })
-
+ 
 
 local telescope = require('telescope.builtin')
 local emmet = require('nvim-emmet')
