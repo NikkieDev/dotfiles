@@ -10,7 +10,10 @@ padding = { x = 12, y = 16 }
 background = "#24283b"
 
 [font]
-normal = { family = "Comic Mono", style = "Regular" }
+normal = { family = "SF Mono", style = "Regular" }
+bold = { family = "SF Mono", style = "Bold" }
+italic = { family = "SF Mono", style = "Regular Italic" }
+bold_italic = { family = "SF Mono", style = "Bold Italic" }
 size = 14
 
 [cursor]
