@@ -6,6 +6,7 @@ inoremap <Left> <Esc>:echo "Use H"<CR>a
 inoremap <Right> <Esc>:echo "Use L"<CR>a
 inoremap <Up> <Esc>:echo "Use K"<CR>a
 inoremap <Down> <Esc>:echo "Use J"<CR>a
+set nowrap
 
 lua << EOF
 vim.pack.add({
@@ -17,7 +18,7 @@ vim.pack.add({
 
     -- Themes
     { src = "https://github.com/folke/tokyonight.nvim" },
-	{ src = "https://github.com/rebelot/kanagawa.nvim" },
+        { src = "https://github.com/rebelot/kanagawa.nvim" },
 
     -- LSP
     { src = "https://github.com/neovim/nvim-lspconfig" },
@@ -32,7 +33,7 @@ vim.pack.add({
 
     -- Git
     { src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{ src = "https://github.com/f-person/git-blame.nvim" },
+        { src = "https://github.com/f-person/git-blame.nvim" },
 
     -- Autocompletion
     { src = "https://github.com/hrsh7th/nvim-cmp" },
@@ -41,6 +42,7 @@ vim.pack.add({
     { src = "https://github.com/hrsh7th/cmp-path" },
     { src = "https://github.com/hrsh7th/cmp-cmdline" },
     { src = "https://github.com/olrtg/nvim-emmet" },
+        { src = "https://github.com/mfussenegger/nvim-jdtls" },
 })
 
 -- vim.cmd.colorscheme("tokyonight-moon")
@@ -79,7 +81,7 @@ vim.diagnostic.config({
     },
   },
 })
-
+ 
 
 local telescope = require('telescope.builtin')
 local emmet = require('nvim-emmet')
@@ -97,9 +99,11 @@ vim.keymap.set('n', '<leader>r', '<cmd>NERDTreeFind<CR>')
 
 -- CMP
 local cmp = require('cmp')
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
 cmp.setup({
     mapping = {
-        ['<C-space>'] = cmp.mapping.complete(),
+        ['<C-i>'] = cmp.mapping.complete(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
         ['<Tab>'] = cmp.mapping.select_next_item(),
         ['<S-Tab>'] = cmp.mapping.select_prev_item(),
@@ -120,7 +124,7 @@ vim.lsp.config("intelephense", {
         intelephense = {
             diagnostics = { undefinedFunctions = false },
             files = { maxSize = 5000000 },
-			environment = { includePaths = { vim.fn.getcwd() .. '/vendor' }, phpVersion = "8.4.15" },
+                        environment = { includePaths = { vim.fn.getcwd() .. '/vendor' }, phpVersion = "8.4.15" },
             stubs = {
                 "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core", "ctype",
                 "curl", "date", "dba", "dom", "enchant", "exif", "FFI", "fileinfo",
@@ -138,31 +142,53 @@ vim.lsp.config("intelephense", {
 })
 
 vim.lsp.config("javascript", {
-	cmd = { "typescript-language-server", "--stdio" },
-	filetypes = { "javascript" },
+        cmd = { "typescript-language-server", "--stdio" },
+        filetypes = { "javascript" },
 })
 
 vim.lsp.config("emmet", {
-	cmd = { "emmet-language-server", "--stdio" },
-	filetypes = { "html", "twig" },
-	root_markers = { ".git" },
+        cmd = { "emmet-language-server", "--stdio" },
+        filetypes = { "html", "twig" },
+        root_markers = { ".git" },
 })
 
 vim.lsp.config("css", {
-	cmd = { "vscode-css-language-server", "--stdio" },
-	filetypes = { "css" },
+        cmd = { "vscode-css-language-server", "--stdio" },
+        filetypes = { "css" },
+})
+
+vim.lsp.config("jdtls", {
+        capabilities = capabilities,
+        cmd = { "jdtls" },
+        cmd_env = {
+                JAVA_HOME = "/Library/Java/JavaVirtualMachines/jdk-24.jdk/Contents/Home",
+        },
+        filetypes = { 'java' },
+        root_markers = {'.git'},
+        settings = {
+                java = {
+                        import = {
+                                gradle = {
+                                        java = {
+                                                home = "/Library/Java/JavaVirtualMachines/jdk-24.jdk/Contents/Home",
+                                        },
+                                },
+                        },
+                },
+        },
 })
 
 vim.lsp.enable("intelephense")
 vim.lsp.enable("javascript")
 vim.lsp.enable("emmet")
 vim.lsp.enable("css")
+vim.lsp.enable("jdtls")
 vim.lsp.inlay_hint.enable(true)
 
 -- Treesitter
 vim.api.nvim_create_autocmd('FileType', {
- 	pattern = { 'php', 'html', 'twig', 'css', 'sql', 'javascript' },
- 	callback = function() vim.treesitter.start() end,
+        pattern = { 'php', 'html', 'twig', 'css', 'sql', 'javascript', 'java' },
+        callback = function() vim.treesitter.start() end,
 });
 
 -- UI plugins
@@ -232,13 +258,13 @@ vim.keymap.set('n', 'vs', '<Cmd>vs<CR>');
 
 -- Replacements
 function toggleProtectionLevel()
-	local word = vim.fn.expand("<cword>")
+        local word = vim.fn.expand("<cword>")
 
-	if word == "private" then
-		vim.cmd('normal! ciwpublic')
-	elseif word == "public" then
-		vim.cmd('normal! ciwprivate')
-	end
+        if word == "private" then
+                vim.cmd('normal! ciwpublic')
+        elseif word == "public" then
+                vim.cmd('normal! ciwprivate')
+        end
 end
 vim.keymap.set('n', '<Tab>', toggleProtectionLevel)
 
