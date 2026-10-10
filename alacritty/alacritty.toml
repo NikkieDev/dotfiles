@@ -5,7 +5,7 @@ working_directory = "/home/nikkie/Documents/Projects"
 decorations = "None"
 startup_mode = "Windowed"
 position = { x = 2560, y=15 }
-dimensions = { columns = 315, lines = 76 }
+dimensions = { columns = 315, lines = 86 }
 padding = { x = 12, y = 16 }
 option_as_alt = "OnlyLeft"
 
@@ -13,11 +13,23 @@ option_as_alt = "OnlyLeft"
 background = "#24283b"
 
 [font]
-normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
-bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }
-italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }
+size = 14.0
 
-size = 14
+[font.normal]
+family = "Liga SFMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "Liga SFMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "Liga SFMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "Liga SFMono Nerd Font"
+style = "Bold Italic"
 
 [cursor]
 style = { shape = "Underline", blinking = "Off" }
